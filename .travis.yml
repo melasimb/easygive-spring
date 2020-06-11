@@ -11,3 +11,10 @@ notifications:
 script:
 #Test unitario y de integracion en perfil DEV, con cobertura
   - mvn verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=melasimb -Dsonar.login=$SONAR
+#Deploy https://easygive-spring.herokuapp.com/api/v0/api-info
+deploy:
+  provider: heroku
+  api_key:
+    secure: $HEROKU
+  on:
+    branch: master
