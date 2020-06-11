@@ -18,3 +18,4 @@ deploy:
     secure: $HEROKU
   on:
     branch: master
+  app: easygive-spring
