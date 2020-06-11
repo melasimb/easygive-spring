@@ -10,3 +10,4 @@ notifications:
     - melasimb@gmail.com
 script:
 #Test unitario y de integracion en perfil DEV, con cobertura
+  - mvn verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=melasimb -Dsonar.login=$SONAR
