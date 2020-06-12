@@ -14,7 +14,6 @@ script:
 #Deploy https://easygive-spring.herokuapp.com/api/v0/api-info
 deploy:
   provider: heroku
-  api_key:
-    secure: $HEROKU
+  api_key: $HEROKU
   on:
     branch: master
