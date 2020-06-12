@@ -9,6 +9,7 @@ realizado en Angular.
 [![Build Status](https://travis-ci.org/melasimb/easygive-spring.svg?branch=develop)](https://travis-ci.org/melasimb/easygive-spring)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=es.upm.miw%3Aeasygive-spring&metric=alert_status)](https://sonarcloud.io/dashboard?id=es.upm.miw%3Aeasygive-spring)
 [![BCH compliance](https://bettercodehub.com/edge/badge/melasimb/easygive-spring?branch=develop)](https://bettercodehub.com/)
+[![Heroku broken](https://easygive-spring.herokuapp.com/api/v0/system/version-badge)](https://easygive-spring.herokuapp.com/api/v0/system/app-info)
 
 ### Tecnologías necesarias
 `Java (8)` `Maven (3.6)` `Spring-Boot (2.1)` `Reactor` `MondoDB (4.0)` --- CI: `GitHub` `Travis-CI` `Sonarcloud` `Better Code Hub` `Heroku`
