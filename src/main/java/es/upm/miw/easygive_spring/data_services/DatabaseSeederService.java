@@ -3,6 +3,8 @@ package es.upm.miw.easygive_spring.data_services;
 import es.upm.miw.easygive_spring.documents.*;
 import es.upm.miw.easygive_spring.repositories.*;
 import org.apache.logging.log4j.LogManager;
+import org.bson.BsonBinarySubType;
+import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
+import java.util.Base64;
 
 @Service
 public class DatabaseSeederService {
@@ -18,18 +21,23 @@ public class DatabaseSeederService {
     private String username;
     @Value("${easygive.admin.password}")
     private String password;
+    @Value("${easygive.logo}")
+    private String logo;
 
     private Environment environment;
     private UserRepository userRepository;
+    private LotRepository lotRepository;
 
 
     @Autowired
     public DatabaseSeederService(
             Environment environment,
-            UserRepository userRepository
+            UserRepository userRepository,
+            LotRepository lotRepository
     ) {
         this.environment = environment;
         this.userRepository = userRepository;
+        this.lotRepository = lotRepository;
     }
 
     @PostConstruct
@@ -54,6 +62,7 @@ public class DatabaseSeederService {
         LogManager.getLogger(this.getClass()).warn("------- Delete All -----------");
         // Delete Repositories -----------------------------------------------------
         this.userRepository.deleteAll();
+        this.lotRepository.deleteAll();
         // -------------------------------------------------------------------------
         this.initialize();
     }
@@ -75,6 +84,16 @@ public class DatabaseSeederService {
         };
         this.userRepository.saveAll(Arrays.asList(users));
         LogManager.getLogger(this.getClass()).warn("        ------- users");
+        Binary binaryLogo = new Binary(BsonBinarySubType.BINARY, Base64.getDecoder().decode(logo));
+        User user = this.userRepository.findByUsername("admin").get();
+        Lot[] lots = {
+                Lot.builder().image(binaryLogo).title("Milk").description("A box of milk").schedule("12:00 - 14:00").wish(false).food(true).delivered(false).user(user).build(),
+                Lot.builder().image(binaryLogo).title("Cookies").description("Two cookie packages").schedule("All day").wish(false).food(true).delivered(false).user(user).build(),
+                Lot.builder().image(binaryLogo).title("Fan").description("Fan like new").schedule("At the weekends").wish(false).food(false).delivered(false).user(user).build(),
+                Lot.builder().image(binaryLogo).title("Books").description("I'm looking for books to read").schedule("In the morning").wish(true).food(false).delivered(false).user(user).build()
+        };
+        this.lotRepository.saveAll(Arrays.asList(lots));
+        LogManager.getLogger(this.getClass()).warn("        ------- lots");
     }
 }
 
