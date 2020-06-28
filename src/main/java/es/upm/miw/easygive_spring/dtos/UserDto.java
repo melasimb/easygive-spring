@@ -26,8 +26,7 @@ public class UserDto {
         // Empty for framework
     }
 
-    public UserDto(String id, String username, String password, String location, String email) {
-        this.id = id;
+    public UserDto(String username, String password, String location, String email) {
         this.username = username;
         this.password = password;
         this.location = location;
@@ -85,7 +84,8 @@ public class UserDto {
     @Override
     public String toString() {
         return "UserDto{" +
-                "username='" + username + '\'' +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", location='" + location + '\'' +
                 ", email='" + email + '\'' +
