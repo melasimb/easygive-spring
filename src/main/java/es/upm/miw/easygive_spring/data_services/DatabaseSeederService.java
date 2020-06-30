@@ -89,8 +89,9 @@ public class DatabaseSeederService {
         Lot[] lots = {
                 Lot.builder().image(binaryLogo).title("Milk").description("A box of milk").schedule("12:00 - 14:00").wish(false).food(true).delivered(false).user(user).build(),
                 Lot.builder().image(binaryLogo).title("Cookies").description("Two cookie packages").schedule("All day").wish(false).food(true).delivered(false).user(user).build(),
+                Lot.builder().image(binaryLogo).title("Yeast").description("I'm looking for yeast").schedule("In the afternoon").wish(true).food(true).delivered(true).user(user).build(),
                 Lot.builder().image(binaryLogo).title("Fan").description("Fan like new").schedule("At the weekends").wish(false).food(false).delivered(false).user(user).build(),
-                Lot.builder().image(binaryLogo).title("Books").description("I'm looking for books to read").schedule("In the morning").wish(true).food(false).delivered(false).user(user).build()
+                Lot.builder().image(binaryLogo).title("Books").description("I'm looking for books to read").schedule("In the morning").wish(true).food(false).delivered(true).user(user).build(),
         };
         this.lotRepository.saveAll(Arrays.asList(lots));
         LogManager.getLogger(this.getClass()).warn("        ------- lots");
