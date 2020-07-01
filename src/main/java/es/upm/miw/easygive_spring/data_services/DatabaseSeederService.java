@@ -53,7 +53,7 @@ public class DatabaseSeederService {
     private void initialize() {
         if (!this.userRepository.findByUsername(this.username).isPresent()) {
             LogManager.getLogger(this.getClass()).warn("------- Create Admin -----------");
-            User user = User.builder().username(this.username).password(this.password).roles(Role.ADMIN).build();
+            User user = User.builder().username(this.username).password(this.password).location("C/Madroño, 14").roles(Role.ADMIN).build();
             this.userRepository.save(user);
         }
     }

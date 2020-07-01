@@ -18,8 +18,9 @@ import javax.validation.Valid;
 public class LotResource {
 
     public static final String LOTS = "/lots";
-    public static final String FOOD_DELIVERED_SEARCH = "/foodDeliveredSearch";
-    public static final String USER_SEARCH = "/userSearch";
+    public static final String SEARCH_FOOD_DELIVERED = "/searchFoodDelivered";
+    public static final String SEARCH_USER = "/searchUser";
+    public static final String LOT_ID = "/{id}";
 
     private LotController lotController;
 
@@ -34,13 +35,31 @@ public class LotResource {
                 .doOnNext(log -> LogManager.getLogger(this.getClass()).debug(log));
     }
 
-    @GetMapping(value = FOOD_DELIVERED_SEARCH)
+    @GetMapping(value = LOT_ID)
+    public Mono<LotDto> read(@PathVariable String id) {
+        return this.lotController.read(id)
+                .doOnNext(log -> LogManager.getLogger(this.getClass()).debug(log));
+    }
+
+    @PutMapping(value = LOT_ID)
+    public Mono<LotDto> update(@PathVariable String id, @Valid @RequestBody LotDto lotDto) {
+        return this.lotController.update(id, lotDto)
+                .doOnNext(log -> LogManager.getLogger(this.getClass()).debug(log));
+    }
+
+    @DeleteMapping(value = LOT_ID)
+    public Mono<Void> delete(@PathVariable String id) {
+        return this.lotController.delete(id)
+                .doOnNext(log -> LogManager.getLogger(this.getClass()).debug(log));
+    }
+
+    @GetMapping(value = SEARCH_FOOD_DELIVERED)
     public Flux<LotDto> searchByFoodAndDelivered(@RequestParam Boolean food, @RequestParam Boolean delivered) {
         return this.lotController.searchByFoodAndDelivered(new LotSearchDto(food, delivered))
                 .doOnNext(log -> LogManager.getLogger(this.getClass()).debug(log));
     }
 
-    @GetMapping(value = USER_SEARCH)
+    @GetMapping(value = SEARCH_USER)
     public Flux<LotDto> searchByUser(@RequestParam String username) {
         return this.lotController.searchByUser(username)
                 .doOnNext(log -> LogManager.getLogger(this.getClass()).debug(log));
