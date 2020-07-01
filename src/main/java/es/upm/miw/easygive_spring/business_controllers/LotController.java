@@ -53,4 +53,33 @@ public class LotController {
                 .switchIfEmpty(Flux.error(new NotFoundException("There aren't lots")))
                 .map(LotDto::new);
     }
+
+    public Mono<LotDto> read(String id) {
+        return this.lotReactRepository.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException("Lot id (" + id + ")")))
+                .map(LotDto::new);
+    }
+
+    public Mono<LotDto> update(String id, LotDto lotDto) {
+        Binary binaryImage = new Binary(BsonBinarySubType.BINARY, Base64.getDecoder().decode(lotDto.getImage()));
+        Mono<Void> user = this.userReactRepository.findByUsername(lotDto.getUsername())
+                .switchIfEmpty(Mono.error(new NotFoundException("User (" + lotDto.getUsername() + ")"))).then();
+        Mono<Lot> lot = this.lotReactRepository.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException("Lot id (" + id + ")")))
+                .map(lot1 -> {
+                    lot1.setImage(binaryImage);
+                    lot1.setTitle(lotDto.getTitle());
+                    lot1.setDescription(lotDto.getDescription());
+                    lot1.setSchedule(lotDto.getSchedule());
+                    lot1.setWish(lotDto.getWish());
+                    lot1.setFood(lotDto.getFood());
+                    lot1.setDelivered(lotDto.getDelivered());
+                    return lot1;
+                });
+        return Mono.when(user, lot).then(this.lotReactRepository.saveAll(lot).next()).map(LotDto::new);
+    }
+
+    public Mono<Void> delete(String id) {
+        return this.lotReactRepository.deleteById(id);
+    }
 }

@@ -2,6 +2,7 @@ package es.upm.miw.easygive_spring.api_rest_controllers;
 
 import es.upm.miw.easygive_spring.data_services.DatabaseSeederService;
 import es.upm.miw.easygive_spring.dtos.LotDto;
+import es.upm.miw.easygive_spring.repositories.LotRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +34,30 @@ class LotResourceIT {
     @Autowired
     private DatabaseSeederService databaseSeederService;
 
+    @Autowired
+    private LotRepository lotRepository;
+
+    LotDto seedDataLot() {
+        return this.restService.loginAdmin(webTestClient)
+                .post().uri(contextPath + LotResource.LOTS)
+                .body(BodyInserters.fromObject(
+                        new LotDto(this.logo, "t002", "d002", "s002", true, false, false, "u001", null)))
+                .exchange()
+                .expectStatus().isOk().expectBody(LotDto.class)
+                .returnResult().getResponseBody();
+    }
+
     @Test
     void testCreateLot() {
-        this.restService.loginAdmin(webTestClient)
+        LotDto lotDto = this.restService.loginAdmin(webTestClient)
                 .post().uri(contextPath + LotResource.LOTS)
                 .body(BodyInserters.fromObject(
                         new LotDto(this.logo, "t001", "d001", "s001", true, false, false, "u001", null)))
                 .exchange()
                 .expectStatus().isOk().expectBody(LotDto.class)
-                .value(Assertions::assertNotNull);
-        this.databaseSeederService.deleteAllAndInitializeAndSeedDataBase();
+                .returnResult().getResponseBody();
+        assertNotNull(lotDto);
+        this.lotRepository.deleteById(lotDto.getId());
     }
 
     @Test
@@ -56,7 +71,7 @@ class LotResourceIT {
     }
 
     @Test
-    void testCreateLotUserNotExists() {
+    void testCreateLotUserNotExist() {
         this.restService.loginAdmin(webTestClient)
                 .post().uri(contextPath + LotResource.LOTS)
                 .body(BodyInserters.fromObject(
@@ -76,10 +91,85 @@ class LotResourceIT {
     }
 
     @Test
+    void testReadLot() {
+        LotDto lotDto = this.seedDataLot();
+        this.restService.loginAdmin(webTestClient)
+                .get().uri(contextPath + LotResource.LOTS + LotResource.LOT_ID, lotDto.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(LotDto.class)
+                .value(Assertions::assertNotNull)
+                .value(lotRead -> assertEquals("t002", lotRead.getTitle()));
+        this.lotRepository.deleteById(lotDto.getId());
+    }
+
+    @Test
+    void testReadLotNotExist() {
+        this.restService.loginAdmin(webTestClient)
+                .get().uri(contextPath + LotResource.LOTS + LotResource.LOT_ID, "0")
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testUpdateLot(){
+        LotDto lotDto = this.seedDataLot();
+        lotDto.setTitle("t003");
+        this.restService.loginAdmin(webTestClient)
+                .put().uri(contextPath + LotResource.LOTS + LotResource.LOT_ID, lotDto.getId())
+                .body(BodyInserters.fromObject(lotDto))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(LotDto.class)
+                .value(Assertions::assertNotNull)
+                .value(lotUpdate -> assertEquals("t003", lotUpdate.getTitle()));
+        this.lotRepository.deleteById(lotDto.getId());
+    }
+
+    @Test
+    void testUpdateLotNotExist(){
+        this.restService.loginAdmin(webTestClient)
+                .put().uri(contextPath + LotResource.LOTS + LotResource.LOT_ID, "0")
+                .body(BodyInserters.fromObject(
+                        new LotDto(this.logo, "t004", "d004", "s004", true, false, false, "u001", null)
+                )).exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testUpdateLotUserNotExist(){
+        LotDto lotDto = this.seedDataLot();
+        lotDto.setUsername("0");
+        this.restService.loginAdmin(webTestClient)
+                .put().uri(contextPath + LotResource.LOTS + LotResource.LOT_ID, lotDto.getId())
+                .body(BodyInserters.fromObject(lotDto))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
+        this.databaseSeederService.deleteAllAndInitializeAndSeedDataBase();
+    }
+
+    @Test
+    void testDeleteLot(){
+        LotDto lotDto = this.seedDataLot();
+        this.restService.loginAdmin(webTestClient)
+                .delete().uri(contextPath + LotResource.LOTS + LotResource.LOT_ID, lotDto.getId())
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void testDeleteLotNotExist(){
+        this.restService.loginAdmin(webTestClient)
+                .delete().uri(contextPath + LotResource.LOTS + LotResource.LOT_ID, "0")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
     void testSearchLotFoodNotDelivered() {
         List<LotDto> lots = this.restService.loginAdmin(webTestClient)
                 .get().uri(uriBuilder -> uriBuilder
-                        .path(contextPath + LotResource.LOTS + LotResource.FOOD_DELIVERED_SEARCH)
+                        .path(contextPath + LotResource.LOTS + LotResource.SEARCH_FOOD_DELIVERED)
                         .queryParam("food", true)
                         .queryParam("delivered",false)
                         .build())
@@ -93,7 +183,7 @@ class LotResourceIT {
     void testSearchLotFoodDelivered() {
         List<LotDto> lots = this.restService.loginAdmin(webTestClient)
                 .get().uri(uriBuilder -> uriBuilder
-                        .path(contextPath + LotResource.LOTS + LotResource.FOOD_DELIVERED_SEARCH)
+                        .path(contextPath + LotResource.LOTS + LotResource.SEARCH_FOOD_DELIVERED)
                         .queryParam("food", true)
                         .queryParam("delivered",true)
                         .build())
@@ -108,7 +198,7 @@ class LotResourceIT {
     void testSearchLotNonFoodNotDelivered() {
         List<LotDto> lots = this.restService.loginAdmin(webTestClient)
                 .get().uri(uriBuilder -> uriBuilder
-                        .path(contextPath + LotResource.LOTS + LotResource.FOOD_DELIVERED_SEARCH)
+                        .path(contextPath + LotResource.LOTS + LotResource.SEARCH_FOOD_DELIVERED)
                         .queryParam("food", false)
                         .queryParam("delivered",false)
                         .build())
@@ -122,7 +212,7 @@ class LotResourceIT {
     void testSearchLotNonFoodDelivered() {
         List<LotDto> lots = this.restService.loginAdmin(webTestClient)
                 .get().uri(uriBuilder -> uriBuilder
-                        .path(contextPath + LotResource.LOTS + LotResource.FOOD_DELIVERED_SEARCH)
+                        .path(contextPath + LotResource.LOTS + LotResource.SEARCH_FOOD_DELIVERED)
                         .queryParam("food", false)
                         .queryParam("delivered",true)
                         .build())
@@ -136,7 +226,7 @@ class LotResourceIT {
     void testSearchLotFoodDeliveredNotFound() {
         this.restService.loginAdmin(webTestClient)
                 .get().uri(uriBuilder -> uriBuilder
-                        .path(contextPath + LotResource.LOTS + LotResource.FOOD_DELIVERED_SEARCH)
+                        .path(contextPath + LotResource.LOTS + LotResource.SEARCH_FOOD_DELIVERED)
                         .queryParam("food", "")
                         .queryParam("delivered","")
                         .build())
@@ -147,7 +237,7 @@ class LotResourceIT {
     void testSearchLotUser() {
         List<LotDto> lots = this.restService.loginAdmin(webTestClient)
                 .get().uri(uriBuilder -> uriBuilder
-                        .path(contextPath + LotResource.LOTS + LotResource.USER_SEARCH)
+                        .path(contextPath + LotResource.LOTS + LotResource.SEARCH_USER)
                         .queryParam("username", "admin")
                         .build())
                 .exchange().expectStatus().isOk().expectBodyList(LotDto.class)
@@ -160,7 +250,7 @@ class LotResourceIT {
     void testSearchLotUserNotFound() {
         this.restService.loginAdmin(webTestClient)
                 .get().uri(uriBuilder -> uriBuilder
-                        .path(contextPath + LotResource.LOTS + LotResource.USER_SEARCH)
+                        .path(contextPath + LotResource.LOTS + LotResource.SEARCH_USER)
                         .queryParam("username", "")
                         .build())
                 .exchange().expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
