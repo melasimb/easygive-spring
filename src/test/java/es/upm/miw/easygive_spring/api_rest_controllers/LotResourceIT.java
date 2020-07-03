@@ -41,7 +41,7 @@ class LotResourceIT {
         return this.restService.loginAdmin(webTestClient)
                 .post().uri(contextPath + LotResource.LOTS)
                 .body(BodyInserters.fromObject(
-                        new LotDto(this.logo, "t002", "d002", "s002", true, false, false, "u001", null)))
+                        new LotDto(this.logo, "t002", "d002", "s002", true, false, false, "u001")))
                 .exchange()
                 .expectStatus().isOk().expectBody(LotDto.class)
                 .returnResult().getResponseBody();
@@ -52,7 +52,7 @@ class LotResourceIT {
         LotDto lotDto = this.restService.loginAdmin(webTestClient)
                 .post().uri(contextPath + LotResource.LOTS)
                 .body(BodyInserters.fromObject(
-                        new LotDto(this.logo, "t001", "d001", "s001", true, false, false, "u001", null)))
+                        new LotDto(this.logo, "t001", "d001", "s001", true, false, false, "u001")))
                 .exchange()
                 .expectStatus().isOk().expectBody(LotDto.class)
                 .returnResult().getResponseBody();
@@ -65,7 +65,7 @@ class LotResourceIT {
         this.restService.loginAdmin(webTestClient)
                 .post().uri(contextPath + LotResource.LOTS)
                 .body(BodyInserters.fromObject(
-                        new LotDto(null, "t002", null, null, true, null, null, null, null)))
+                        new LotDto(null, "t002", null, null, true, null, null, null)))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -75,7 +75,7 @@ class LotResourceIT {
         this.restService.loginAdmin(webTestClient)
                 .post().uri(contextPath + LotResource.LOTS)
                 .body(BodyInserters.fromObject(
-                        new LotDto(this.logo, "t003", "d003", "s003", false, true, false, "1", null)))
+                        new LotDto(this.logo, "t003", "d003", "s003", false, true, false, "1")))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
@@ -85,7 +85,7 @@ class LotResourceIT {
         this.webTestClient
                 .post().uri(contextPath + LotResource.LOTS)
                 .body(BodyInserters.fromObject(
-                        new LotDto(this.logo, "t001", "d001", "s001", true, false, false, "admin", null)))
+                        new LotDto(this.logo, "t001", "d001", "s001", true, false, false, "admin")))
                 .exchange()
                 .expectStatus().isUnauthorized();
     }
@@ -131,7 +131,7 @@ class LotResourceIT {
         this.restService.loginAdmin(webTestClient)
                 .put().uri(contextPath + LotResource.LOTS + LotResource.LOT_ID, "0")
                 .body(BodyInserters.fromObject(
-                        new LotDto(this.logo, "t004", "d004", "s004", true, false, false, "u001", null)
+                        new LotDto(this.logo, "t004", "d004", "s004", true, false, false, "u001")
                 )).exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }

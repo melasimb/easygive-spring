@@ -23,6 +23,8 @@ public class User {
 
     private String location;
 
+    private String mobile;
+
     private String email;
 
     private Boolean active;
@@ -74,6 +76,14 @@ public class User {
         this.location = location;
     }
 
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -116,6 +126,7 @@ public class User {
                 ", registrationDate=" + registrationDate +
                 ", password='" + password + '\'' +
                 ", location='" + location + '\'' +
+                ", mobile='" + mobile + '\'' +
                 ", email='" + email + '\'' +
                 ", active=" + active +
                 ", roles=" + Arrays.toString(roles) +
@@ -162,6 +173,11 @@ public class User {
 
         public Builder roles(Role... roles) {
             this.user.roles = roles;
+            return this;
+        }
+
+        public Builder mobile(String mobile) {
+            this.user.mobile = mobile;
             return this;
         }
 

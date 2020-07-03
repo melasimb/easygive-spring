@@ -54,7 +54,7 @@ public class DatabaseSeederService {
     private void initialize() {
         if (!this.userRepository.findByUsername(this.username).isPresent()) {
             LogManager.getLogger(this.getClass()).warn("------- Create Admin -----------");
-            User user = User.builder().username(this.username).password(this.password).location("C/Madroño, 14").roles(Role.ADMIN).build();
+            User user = User.builder().username(this.username).password(this.password).location("C/Madroño, 14").email("admin@gmail.com").mobile("600000000").roles(Role.ADMIN).build();
             this.userRepository.save(user);
         }
     }
@@ -77,11 +77,11 @@ public class DatabaseSeederService {
         LogManager.getLogger(this.getClass()).warn("------- Initial Load from JAVA -----------");
         Role[] allRoles = {Role.ADMIN, Role.USER};
         User[] users = {
-                User.builder().username("all-roles").password("p000").location("C/EasyGive, 0, MIW").email("u000@gmail.com").roles(allRoles).build(),
-                User.builder().username("u001").password("p001").location("C/EasyGive, 1").email("u001@gmail.com").roles(Role.USER).build(),
-                User.builder().username("u002").password("p002").location("C/EasyGive, 2").email("u002@gmail.com").roles(Role.USER).build(),
-                User.builder().username("u003").password("p003").location("C/EasyGive, 3").email("u003@gmail.com").roles(Role.USER).build(),
-                User.builder().username("u004").password("p004").location("C/EasyGive, 4").email("u004@gmail.com").roles(Role.USER).build(),
+                User.builder().username("all-roles").password("p000").location("C/EasyGive, 0, MIW").email("u000@gmail.com").mobile("666666660").roles(allRoles).build(),
+                User.builder().username("u001").password("p001").location("C/EasyGive, 1").email("u001@gmail.com").mobile("666666661").roles(Role.USER).build(),
+                User.builder().username("u002").password("p002").location("C/EasyGive, 2").email("u002@gmail.com").mobile("666666662").roles(Role.USER).build(),
+                User.builder().username("u003").password("p003").location("C/EasyGive, 3").email("u003@gmail.com").mobile("666666663").roles(Role.USER).build(),
+                User.builder().username("u004").password("p004").location("C/EasyGive, 4").email("u004@gmail.com").mobile("666666664").roles(Role.USER).build(),
         };
         this.userRepository.saveAll(Arrays.asList(users));
         LogManager.getLogger(this.getClass()).warn("        ------- users");

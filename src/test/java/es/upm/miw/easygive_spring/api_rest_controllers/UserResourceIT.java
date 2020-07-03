@@ -60,7 +60,7 @@ class UserResourceIT {
         this.webTestClient
                 .post().uri(contextPath + UserResource.USERS)
                 .body(BodyInserters.fromObject(
-                        new UserDto(User.builder().username("u005").password("p005").location("C/EasyGive, 5").email("u005@gmail.com").build())))
+                        new UserDto(User.builder().username("u005").password("p005").location("C/EasyGive, 5").mobile("666666665").email("u005@gmail.com").build())))
                 .exchange()
                 .expectStatus().isOk().expectBody(UserDto.class)
                 .value(Assertions::assertNotNull);
@@ -71,7 +71,7 @@ class UserResourceIT {
         this.webTestClient
                 .post().uri(contextPath + UserResource.USERS)
                 .body(BodyInserters.fromObject(
-                        new UserDto(User.builder().username(restService.getAdminUsername()).password("6").location("C/EasyGive, 5").email("admin@gmail.com").build())))
+                        new UserDto(User.builder().username(restService.getAdminUsername()).password("6").location("C/Madroño, 14").mobile("600000000").email("admin@gmail.com").build())))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT);
     }

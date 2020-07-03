@@ -38,11 +38,13 @@ public class LotDto {
 
     private String location;
 
+    private String mobile;
+
     public LotDto() {
         // Empty for framework
     }
 
-    public LotDto(String image, String title, String description, String schedule, Boolean wish, Boolean food, Boolean delivered, String username, String location) {
+    public LotDto(String image, String title, String description, String schedule, Boolean wish, Boolean food, Boolean delivered, String username) {
         this.image = image;
         this.title = title;
         this.description = description;
@@ -51,7 +53,6 @@ public class LotDto {
         this.food = food;
         this.delivered = delivered;
         this.username = username;
-        this.location = location;
     }
 
     public LotDto(Lot lot) {
@@ -65,6 +66,7 @@ public class LotDto {
         this.delivered = lot.getDelivered();
         this.username = lot.getUser().getUsername();
         this.location = lot.getUser().getLocation();
+        this.mobile = lot.getUser().getMobile();
     }
 
     public String getId() {
@@ -147,6 +149,14 @@ public class LotDto {
         this.location = location;
     }
 
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
     @Override
     public String toString() {
         return "LotDto{" +
@@ -160,6 +170,7 @@ public class LotDto {
                 ", delivered=" + delivered +
                 ", username='" + username + '\'' +
                 ", location='" + location + '\'' +
+                ", mobile='" + mobile + '\'' +
                 '}';
     }
 }

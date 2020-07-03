@@ -20,16 +20,20 @@ public class UserDto {
     @NotNull
     private String location;
 
+    @NotNull
+    private String mobile;
+
     private String email;
 
     public UserDto() {
         // Empty for framework
     }
 
-    public UserDto(String username, String password, String location, String email) {
+    public UserDto(String username, String password, String location, String mobile, String email) {
         this.username = username;
         this.password = password;
         this.location = location;
+        this.mobile = mobile;
         this.email = email;
     }
 
@@ -38,6 +42,7 @@ public class UserDto {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.location = user.getLocation();
+        this.mobile = user.getMobile();
         this.email = user.getEmail();
     }
 
@@ -81,6 +86,14 @@ public class UserDto {
         this.email = email;
     }
 
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
     @Override
     public String toString() {
         return "UserDto{" +
@@ -88,6 +101,7 @@ public class UserDto {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", location='" + location + '\'' +
+                ", mobile='" + mobile + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }

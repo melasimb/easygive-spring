@@ -41,7 +41,7 @@ public class UserController {
 
     public Mono<UserDto> create(UserDto userDto) {
         Mono<Void> noExistByUsername = this.noExistByUsername(userDto.getUsername());
-        User user = User.builder().username(userDto.getUsername()).password(userDto.getPassword()).location(userDto.getLocation()).email(userDto.getEmail()).build();
+        User user = User.builder().username(userDto.getUsername()).password(userDto.getPassword()).location(userDto.getLocation()).mobile(userDto.getMobile()).email(userDto.getEmail()).build();
         return Mono.when(noExistByUsername).then(this.userReactRepository.save(user)).map(UserDto::new);
     }
 }
