@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Optional;
 
 @Service
 public class DatabaseSeederService {
@@ -85,7 +86,9 @@ public class DatabaseSeederService {
         this.userRepository.saveAll(Arrays.asList(users));
         LogManager.getLogger(this.getClass()).warn("        ------- users");
         Binary binaryLogo = new Binary(BsonBinarySubType.BINARY, Base64.getDecoder().decode(logo));
-        User user = this.userRepository.findByUsername("admin").isPresent() ? this.userRepository.findByUsername("admin").get() : null;
+
+        Optional<User> userOptional = this.userRepository.findByUsername("admin");
+        User user = userOptional.orElse(users[0]);
         Lot[] lots = {
                 Lot.builder().image(binaryLogo).title("Milk").description("A box of milk").schedule("12:00 - 14:00").wish(false).food(true).delivered(false).user(user).build(),
                 Lot.builder().image(binaryLogo).title("Cookies").description("Two cookie packages").schedule("All day").wish(false).food(true).delivered(false).user(user).build(),
