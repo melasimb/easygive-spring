@@ -29,13 +29,17 @@ public class LotController {
         this.userReactRepository = userReactRepository;
     }
 
+    private Mono<User> findUserByUsername (String username) {
+        return this.userReactRepository.findByUsername(username)
+                .switchIfEmpty(Mono.error(new NotFoundException("User (" + username + ")")));
+    }
+
     public Mono<LotDto> create(LotDto lotDto) {
         Binary binaryImage = new Binary(BsonBinarySubType.BINARY, Base64.getDecoder().decode(lotDto.getImage()));
         Lot lot = Lot.builder().image(binaryImage).title(lotDto.getTitle())
                 .description(lotDto.getDescription()).schedule(lotDto.getSchedule()).wish(lotDto.getWish()).food(lotDto.getFood())
                 .delivered(lotDto.getDelivered()).build();
-        Mono<Void> user = this.userReactRepository.findByUsername(lotDto.getUsername())
-                .switchIfEmpty(Mono.error(new NotFoundException("User (" + lotDto.getUsername() + ")")))
+        Mono<Void> user = this.findUserByUsername(lotDto.getUsername())
                 .doOnNext(lot::setUser).then();
         return Mono.when(user).then(this.lotReactRepository.save(lot)).map(LotDto::new);
     }
@@ -47,8 +51,7 @@ public class LotController {
     }
 
     public Flux<LotDto> searchByUser(String username) {
-        Mono<User> user = this.userReactRepository.findByUsername(username)
-                .switchIfEmpty(Mono.error(new NotFoundException("User (" + username + ")")));
+        Mono<User> user = this.findUserByUsername(username);
         return this.lotReactRepository.findByUser(user)
                 .switchIfEmpty(Flux.error(new NotFoundException("There aren't lots")))
                 .map(LotDto::new);
@@ -62,8 +65,7 @@ public class LotController {
 
     public Mono<LotDto> update(String id, LotDto lotDto) {
         Binary binaryImage = new Binary(BsonBinarySubType.BINARY, Base64.getDecoder().decode(lotDto.getImage()));
-        Mono<Void> user = this.userReactRepository.findByUsername(lotDto.getUsername())
-                .switchIfEmpty(Mono.error(new NotFoundException("User (" + lotDto.getUsername() + ")"))).then();
+        Mono<Void> user = this.findUserByUsername(lotDto.getUsername()).then();
         Mono<Lot> lot = this.lotReactRepository.findById(id)
                 .switchIfEmpty(Mono.error(new NotFoundException("Lot id (" + id + ")")))
                 .map(lot1 -> {
