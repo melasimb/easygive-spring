@@ -44,17 +44,6 @@ public class LotDto {
         // Empty for framework
     }
 
-    public LotDto(String image, String title, String description, String schedule, Boolean wish, Boolean food, Boolean delivered, String username) {
-        this.image = image;
-        this.title = title;
-        this.description = description;
-        this.schedule = schedule;
-        this.wish = wish;
-        this.food = food;
-        this.delivered = delivered;
-        this.username = username;
-    }
-
     public LotDto(Lot lot) {
         this.id = lot.getId();
         this.image = Base64.getEncoder().encodeToString(lot.getImage().getData());
